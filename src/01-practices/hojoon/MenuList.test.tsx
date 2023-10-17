@@ -64,6 +64,13 @@ describe('<MenuList />', () => {
     //메뉴 2는 인기 메뉴가 아니다.
 
     expect(getByText('인기')).toBeInTheDocument();
-    // expect(queryByText('메뉴2 인기')).not.toBeInTheDocument();
+    expect(queryByText('메뉴2 인기')).not.toBeInTheDocument();
+  });
+
+  it('인기 텍스트가 제대로 있는지.', () => {
+    const { getAllByText } = render(<MenuList menus={mockMenus} />);
+
+    const popularLabels = getAllByText('인기');
+    expect(popularLabels).toHaveLength(2); // 두 개의 메뉴가 인기 메뉴이므로
   });
 });
