@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect'; // for the "toBeInTheDocument" matcher
 import { Menu } from './Menu';
 
 const mockMenuInfo = {
