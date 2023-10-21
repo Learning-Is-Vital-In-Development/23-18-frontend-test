@@ -1,23 +1,26 @@
 // import styles from './Cart.module.css';
-import { FoodInfoType } from '../type';
+import { Menu } from '../type';
 
 interface CartProps {
-  foodInfo: FoodInfoType;
+  menu: Menu;
 }
 const BADGE = '사장님 추천';
 
-export const CartItem = ({ foodInfo }: CartProps) => {
-  const { title, subTitle, price, priceDetail, recommendOfOwner, img } = foodInfo;
+export const CartItem = ({ menu }: CartProps) => {
+  const { name, description, image, options, isPopular } = menu;
   return (
     <div className="card-item">
       <div>
-        <h2>{title}</h2>
-        <h3>{subTitle}</h3>
-        <p>{priceDetail ? `${priceDetail} : ${price}` : price}</p>
-        {recommendOfOwner ? <p>{BADGE}</p> : null}
+        <h2>{name}</h2>
+        <h3>{description}</h3>
+        {options.map((option, index) => {
+          const { name, price } = option;
+          return <p key={index}>{name ? `${name} : ${price}` : `${price}`}</p>;
+        })}
+        {isPopular ? <p>{BADGE}</p> : null}
       </div>
       <div>
-        <img src={img} alt="foodImages" />
+        <img src={image} alt="foodImages" />
       </div>
     </div>
   );

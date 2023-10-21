@@ -1,18 +1,24 @@
 import { render, screen } from '@testing-library/react';
 import { CartItem } from './CartItem';
-import { FoodInfoType } from '../type';
+import { Menu } from '../type';
 
 describe('CardItem Component', () => {
-  const foodInfoWithoutRecommendation: FoodInfoType = {
-    title: '물떡 & 어묵탕',
-    subTitle: '칼칼한 국물과 탱탱한 밀가래떡과 어묵',
-    price: 4900,
-    img: './asset/img.jpeg',
-    recommendOfOwner: false,
+  const foodInfoWithoutRecommendation: Menu = {
+    name: '[꼬마] 새우마요김밥',
+    description: '고소한 새우튀김과 특제 마요소스',
+    options: [
+      {
+        name: '2줄',
+        price: 2700,
+      },
+    ],
+    image: './asset/img.jpeg',
+    isPopular: false,
+    tags: [''],
   };
 
   test('renders price with priceDetail when priceDetail is present', () => {
-    render(<CartItem foodInfo={foodInfoWithoutRecommendation} />);
+    render(<CartItem menu={foodInfoWithoutRecommendation} />);
 
     const badgeElement = screen.queryByText('사장님 추천');
 
@@ -20,16 +26,21 @@ describe('CardItem Component', () => {
     expect(badgeElement).toBeNull();
   });
 
-  const foodInfoWithRecommendation: FoodInfoType = {
-    title: '물떡 & 어묵탕',
-    subTitle: '칼칼한 국물과 탱탱한 밀가래떡과 어묵',
-    price: 4900,
-    img: './asset/img.jpeg',
-    recommendOfOwner: true,
+  const foodInfoWithRecommendation: Menu = {
+    name: '[꼬마] 새우마요김밥',
+    description: '고소한 새우튀김과 특제 마요소스',
+    options: [
+      {
+        price: 2700,
+      },
+    ],
+    image: './asset/img.jpeg',
+    isPopular: true,
+    tags: [''],
   };
 
   test('renders "사장님 추천" when recommendOfOwner is true', () => {
-    render(<CartItem foodInfo={foodInfoWithRecommendation} />);
+    render(<CartItem menu={foodInfoWithRecommendation} />);
 
     const badgeElement = screen.getByText('사장님 추천');
 

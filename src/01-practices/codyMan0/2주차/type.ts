@@ -1,13 +1,16 @@
-export interface FoodInfoType {
-  title: string;
-  subTitle: string;
-  price: number;
-  priceDetail?: number;
-  img: string;
-  recommendOfOwner?: boolean;
+export interface Menu {
+  name: string;
+  description: string;
+  options: {
+    name?: string;
+    price: number;
+  }[];
+  image?: string;
+  isPopular?: boolean;
+  tags: string[];
 }
 
-export interface RestaurantInfo {
-  restaurantName: string;
-  foodInfoList: FoodInfoType[];
+export interface MenuList {
+  title: string;
+  menus: Menu[];
 }
