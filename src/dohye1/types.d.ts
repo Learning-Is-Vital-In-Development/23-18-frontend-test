@@ -1,14 +1,8 @@
-﻿export interface 메뉴 {
+﻿export interface MenuItem {
   title: string;
-  price: number;
+  price: string;
   imgUrl: string;
   unit?: string;
   description?: string;
   recommended?: boolean;
-}
-
-export interface 메뉴목록 {
-  title?: string;
-  description?: string;
-  items: 메뉴[];
 }
