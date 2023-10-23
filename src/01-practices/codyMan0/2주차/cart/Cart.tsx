@@ -1,19 +1,17 @@
-// import styles from './Cart.module.css';
-// import styles from './Cart.module.css';
 import { CartItem } from '../cartItem/CartItem';
-import { RestaurantInfo } from '../type';
+import { MenuList } from '../type';
 
 interface CartProps {
-  restaurantList: RestaurantInfo;
+  menuList: MenuList;
 }
 
-export const Cart = ({ restaurantList }: CartProps) => {
-  const { restaurantName, foodInfoList } = restaurantList;
+export const Cart = ({ menuList }: CartProps) => {
+  const { title, menus } = menuList;
   return (
     <div className="layout">
-      <h1>{restaurantName}</h1>
-      {foodInfoList.map((foodInfo, index) => {
-        return <CartItem key={index} foodInfo={foodInfo} />;
+      <h1>{title}</h1>
+      {menus.map((menu, index) => {
+        return <CartItem key={index} menu={menu} />;
       })}
     </div>
   );
