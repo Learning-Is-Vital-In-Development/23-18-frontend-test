@@ -1,12 +1,12 @@
-﻿import styles from './MenuItem.module.css';
-import { MenuItem } from './types';
-import { formatKrPrice } from './util';
+﻿import styles from './style.module.css';
+import { 메뉴 } from '../../types';
+import { formatKrPrice } from '../../utils';
 
 export interface Props {
-  item: MenuItem;
+  item: 메뉴;
 }
 
-export default function Item({ item }: Props) {
+export default function MenuItem({ item }: Props) {
   const { title, description, price, imgUrl, unit, recommended = false } = item;
 
   return (
@@ -20,7 +20,7 @@ export default function Item({ item }: Props) {
         </p>
         {recommended && <div className={styles.badge}>사장님 추천</div>}
       </div>
-      <img src={imgUrl} alt="title" />
+      <img src={imgUrl} alt={title} />
     </div>
   );
 }
