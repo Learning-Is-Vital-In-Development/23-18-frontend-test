@@ -42,9 +42,22 @@ describe('MenuOption 컴포넌트 테스트', () => {
     },
   ];
 
-  it('옳바르게 렌더링 되는지 확인하기', () => {
+  it('옳바르게 렌더링 되는지 확인', () => {
     const { getByText } = render(<MenuOption optionList={optionListData} />);
 
     expect(getByText('스팸구이')).toBeInTheDocument();
+    expect(getByText('[국내산갈비] 전통 돼지갈비찜')).toBeInTheDocument();
+  });
+
+  it('인기 메뉴 표시 확인', () => {
+    const { getByText } = render(<MenuOption optionList={optionListData} />);
+
+    expect(getByText('인기')).toBeInTheDocument();
+  });
+
+  it('가격이 올바르게 표시되는지 확인', () => {
+    const { getByText } = render(<MenuOption optionList={optionListData} />);
+
+    expect(getByText('18000')).toBeInTheDocument();
   });
 });

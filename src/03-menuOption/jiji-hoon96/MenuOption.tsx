@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import S from './MenuOption.module.css';
 import { MenuOptionsProps } from './types';
 
@@ -6,6 +7,7 @@ interface MenuOptionListProps {
 }
 
 export const MenuOption = ({ optionList }: MenuOptionListProps) => {
+  const [count, setCount] = useState(0);
   return (
     <>
       {optionList.map((option, index) => (
@@ -20,6 +22,9 @@ export const MenuOption = ({ optionList }: MenuOptionListProps) => {
             </div>
             <div className={S.description}>
               <span>{option.description}</span>
+            </div>
+            <div>
+              <span className={S.name}>{`메뉴 리뷰 ${option.review}개 {'>'}`}</span>
             </div>
           </div>
           <div className={S.main}>
@@ -44,9 +49,9 @@ export const MenuOption = ({ optionList }: MenuOptionListProps) => {
           <div className={S.mainHeader}>
             <p className={S.name}>수량</p>
             <div className={S.amountBox}>
-              <button>-</button>
-              <input value={option.count} />
-              <button>+</button>
+              <button onClick={() => setCount((prev) => prev - 1)}>-</button>
+              <input value={option.count} defaultValue={count} />
+              <button onClick={() => setCount((prev) => prev + 1)}>+</button>
             </div>
           </div>
           <div className={S.textarea}>
