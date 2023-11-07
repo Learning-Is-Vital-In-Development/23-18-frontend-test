@@ -1,15 +1,31 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-
-import { Menu, MenuList } from './components';
+import Store from './page/Store';
+import Detail from './page/Detail';
+import Error from './page/Error';
+import Result from './page/Result';
+import Home from './page/Home';
 
 const router = createBrowserRouter([
   {
-    path: '/store/1',
-    element: <MenuList />,
+    path: '/',
+    element: <Home />,
   },
   {
-    path: '/store/1/menu/2',
-    element: <Menu />,
+    path: '/store/:id',
+    element: <Store />,
+  },
+  {
+    path: '/store/:id/menu/:menuId',
+    element: <Detail />,
+  },
+  {
+    path: '/result',
+    element: <Result />,
+  },
+
+  {
+    path: '*',
+    element: <Error />,
   },
 ]);
 
