@@ -7,11 +7,12 @@ import { encodeBase64 } from '../../utils';
 const MenuOption = (props: MenuInterface) => {
   const { name, options, isPopular, description, image } = props;
   const { storeId } = useParams();
-  const [price, setPrice] = useState(options[0].price);
+  const [price, setPrice] = useState(props.options[0].price);
   const [quantity, setQuantity] = useState(1);
   const MIN_ORDER_PRICE = 9900;
   const navigate = useNavigate();
   const { cart, price: accumulatePrice } = useQueryString();
+
   return (
     <div>
       {image && <img src={image} alt={`${name} 이미지`} />}
@@ -23,7 +24,7 @@ const MenuOption = (props: MenuInterface) => {
       {options.length > 1 ? (
         <fieldset role="radiogroup">
           {options.map((option) => {
-            const { name, price } = option;
+            const { name, price: menuPrice } = option;
             return (
               <div key={name}>
                 <label htmlFor={name}>{name}</label>
@@ -31,7 +32,7 @@ const MenuOption = (props: MenuInterface) => {
                   type="radio"
                   id={name}
                   name="menu-option"
-                  value={price}
+                  value={menuPrice}
                   onChange={(e) => {
                     setPrice(Number(e.target.value));
                   }}
@@ -44,7 +45,6 @@ const MenuOption = (props: MenuInterface) => {
         <div>
           <div>가격</div>
           <div>
-            {options[0].name && <span>{options[0].name}</span>}
             <span data-testid="priceOnly">{`${options[0].price.toLocaleString()}원`}</span>
           </div>
         </div>

@@ -1,6 +1,6 @@
 [
   {
-    "storeId": 1,
+    "id": 1,
     "title": "카페",
     "menus": [
       {
@@ -70,7 +70,7 @@
     ]
   },
   {
-    "storeId": 2,
+    "id": 2,
     "title": "삼첩분식",
     "menus": [
       {
