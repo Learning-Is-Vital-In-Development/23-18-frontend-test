@@ -1,10 +1,11 @@
 ﻿export const TEST_ID = {
-  STORE_TITLE: 'storeTitle',
-  MENU_LIST: 'menulist',
-  MENU_GROUP: 'menuGroup',
-  MENU_ITEM: 'menuItem',
-  ADD_TO_CART: 'addToCart',
-  GROUP_TITLE: 'groupTitle',
+  STORE_TITLE: 'STORE_TITLE',
+  MENU_LIST: 'MENU_LIST',
+  MENU_GROUP: 'MENU_GROUP',
+  MENU_ITEM: 'MENU_ITEM',
+  ADD_TO_CART: 'ADD_TO_CART',
+  GROUP_TITLE: 'GROUP_TITLE',
   ORDER: 'ORDER',
   ORDER_COUNT: 'ORDER_COUNT',
+  OPER_YN: 'OPER_YN',
 };
