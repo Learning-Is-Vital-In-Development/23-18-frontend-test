@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { MenuList } from '../../components';
 import { useQueryString } from '../../hooks';
 import { useQuery } from '@tanstack/react-query';
-
+import { getOpenStatus } from '../../utils';
 import type { StoreInterface } from '../../types';
 
 const Store = () => {
@@ -22,6 +22,7 @@ const Store = () => {
   if (isLoading) return <div>로딩중...</div>;
   return (
     <>
+      <div>{getOpenStatus(data.openHour, data.closeHour) ? '영업중' : '영업 종료'}</div>
       {data.storeMenu.map((item) => (
         <MenuList key={item.id} data={item} />
       ))}
