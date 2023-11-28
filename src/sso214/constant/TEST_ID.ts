@@ -34,6 +34,9 @@ export const TEST_ID = {
     PRICE: 'menu-option-price',
     SUBMIT_BUTTON: 'menu-option-submit-button',
   },
+  LOADING: {
+    LOADING: 'loading',
+  },
   NO_MATCH: {
     NO_MATCH: 'no-match',
   },
