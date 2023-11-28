@@ -14,6 +14,8 @@
   - `playwright.config.ts`
   - `vite-env.d.ts`
   - `vite.config.ts`
+  - `main.tsx`
+- `main.tsx` 내용 수정
 - `playwright.config.ts`의 `command` 옵션 수정
   - npm script는 작성해 뒀습니다.
 
