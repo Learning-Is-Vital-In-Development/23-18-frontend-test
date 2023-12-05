@@ -37,7 +37,7 @@ const Result = () => {
           );
         })}
       </ol>
-      <div>총 금액 {price.toLocaleString()}원</div>
+      <div data-testid="resultPrice">총 금액 {price.toLocaleString()}원</div>
     </div>
   );
 };
