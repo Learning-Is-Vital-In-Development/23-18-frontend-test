@@ -1,19 +1,33 @@
 import { useQueryString } from '../../hooks';
-import data from '../../constants/data.json';
 import { useLocation } from 'react-router-dom';
+import type { StoreInterface } from '../../types';
+
+import { useQuery } from '@tanstack/react-query';
 
 const Result = () => {
   const { cart, price } = useQueryString();
   const { search } = useLocation();
   const storeId = new URLSearchParams(search).get('storeId');
-  const storeData = data.find((item) => item.storeId === Number(storeId))?.menus;
 
+  const fetchMenus = async (storeId: string): Promise<StoreInterface> => {
+    const response = await fetch(`http://${location.host}/api/store/${storeId}`);
+    return response.json() as Promise<StoreInterface>;
+  };
+  const { data, isLoading } = useQuery({
+    queryKey: ['store', storeId],
+    queryFn: () => fetchMenus(storeId!),
+  });
+
+  if (!data) return null;
+  if (isLoading) return <div>로딩중...</div>;
   return (
     <div>
       <h2>장바구니</h2>
       <ol>
         {cart.map((item) => {
-          const menuData = storeData?.find((menu) => menu.id === item.menuId);
+          const menuData = data.storeMenu
+            .flatMap((item) => item.menus)
+            .find((menu) => menu.id === item.menuId);
           return (
             <li key={item.menuId}>
               <span>{menuData?.name}</span>
@@ -23,7 +37,7 @@ const Result = () => {
           );
         })}
       </ol>
-      <div>총 금액 {price.toLocaleString()}원</div>
+      <div data-testid="resultPrice">총 금액 {price.toLocaleString()}원</div>
     </div>
   );
 };

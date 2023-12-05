@@ -3,6 +3,7 @@ import menuData from '../constants/menu.json';
 import { MenuList } from '../components';
 import type { MenuListInterface } from '../types';
 import { BrowserRouter } from 'react-router-dom';
+
 const mockData: MenuListInterface = menuData;
 
 const renderMenuList = () => {

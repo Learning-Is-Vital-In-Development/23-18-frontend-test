@@ -1,6 +1,24 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Store, Option, Result, Home } from '../pages';
 
+export const routes = [
+  {
+    path: '/',
+    element: <Home />,
+  },
+  {
+    path: '/store/:storeId',
+    element: <Store />,
+  },
+  {
+    path: '/store/:storeId/menu/:menuId',
+    element: <Option />,
+  },
+  {
+    path: '/result',
+    element: <Result />,
+  },
+];
 const Router = () => {
   return (
     <BrowserRouter>

@@ -1,19 +1,14 @@
-import { Link } from 'react-router-dom';
-import data from '../../constants/data.json';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
+  const storeId = 'a382f0b9';
+
   return (
     <div>
       <h1>Home</h1>
-      <ul>
-        {data.map(({ storeId, title }) => (
-          <li key={storeId}>
-            <Link to={`/store/${storeId}`}>{title}</Link>
-          </li>
-        ))}
-      </ul>
+      <button onClick={() => navigate(`/store/${storeId}`)}>가게로 이동</button>
     </div>
   );
 };
-
 export default Home;

@@ -11,7 +11,12 @@ export interface MenuInterface {
   tags: string[];
 }
 export interface MenuListInterface {
-  storeId: number;
+  id: number;
   title: string;
   menus: MenuInterface[];
+}
+export interface StoreInterface {
+  openHour: number;
+  closeHour: number;
+  storeMenu: MenuListInterface[];
 }

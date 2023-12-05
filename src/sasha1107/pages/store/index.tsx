@@ -1,18 +1,31 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { MenuList } from '../../components';
-import data from '../../constants/data.json';
 import { useQueryString } from '../../hooks';
+import { useQuery } from '@tanstack/react-query';
+import { getOpenStatus } from '../../utils';
+import type { StoreInterface } from '../../types';
 
 const Store = () => {
   const { storeId } = useParams();
   const navigate = useNavigate();
-  const storeData = data.find((item) => item.storeId === Number(storeId));
+  const fetchMenus = async (storeId: string): Promise<StoreInterface> => {
+    const response = await fetch(`http://${location.host}/api/store/${storeId}`);
+    return response.json() as Promise<StoreInterface>;
+  };
+  const { data, isLoading } = useQuery({
+    queryKey: ['store', storeId],
+    queryFn: () => fetchMenus(storeId!),
+  });
   const { cart, price, queryString } = useQueryString();
   const totalAmount = cart.map((item) => item.quantity).reduce((acc, cur) => acc + cur, 0);
-  if (!storeData) return null;
+  if (!data) return null;
+  if (isLoading) return <div>로딩중...</div>;
   return (
     <>
-      <MenuList data={storeData} />
+      <div>{getOpenStatus(data.openHour, data.closeHour) ? '영업중' : '영업 종료'}</div>
+      {data.storeMenu.map((item) => (
+        <MenuList key={item.id} data={item} />
+      ))}
       {cart.length > 0 && (
         <button
           role="button"
