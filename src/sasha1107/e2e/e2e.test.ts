@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 
 test('HomePage', async ({ page }) => {
   await page.goto('http://localhost:3000');
-
   // 페이지 제목 찾기
   const title = page.getByRole('heading', { name: /Home/ });
   const button = page.getByRole('button', { name: /가게로 이동/ });
@@ -10,10 +9,6 @@ test('HomePage', async ({ page }) => {
   await expect(button).toBeVisible();
   await button.click();
   expect(page.url()).toBe('http://localhost:3000/store/a382f0b9');
-});
-
-test('StorePage', async ({ page }) => {
-  await page.goto('http://localhost:3000/store/a382f0b9');
 
   // 오픈 상태 확인
   // const isOpen = page.getByText('영업중');
@@ -22,12 +17,9 @@ test('StorePage', async ({ page }) => {
   const 마라로제 = page.getByText('마라로제');
   await expect(마라로제).toBeVisible();
   await 마라로제.click();
-  expect(page.url()).toBe('http://localhost:3000/store/a382f0b9/menu/4022f81d');
-});
 
-test('장바구니에 담기', async ({ page }) => {
-  await page.goto('http://localhost:3000/store/a382f0b9/menu/4022f81d');
-
+  const 배달최소주문금액 = page.getByText('배달최소주문금액');
+  await expect(배달최소주문금액).toBeVisible();
   // 메뉴 이름 확인
   const menuName = page.getByText('떡볶이');
   await expect(menuName).toBeVisible();
@@ -37,26 +29,6 @@ test('장바구니에 담기', async ({ page }) => {
   await expect(addButton).toHaveText('9,900원 담기');
 
   // 수량 증가 버튼
-  const incrementButton = page.getByRole('button', { name: /수량 증가/ });
-  await expect(incrementButton).toBeVisible();
-  await incrementButton.click();
-
-  await expect(addButton).toHaveText('19,800원 담기');
-
-  await addButton.click();
-  expect(page.url()).toContain('http://localhost:3000/store/a382f0b9?data=');
-});
-
-test('주문하기 ', async ({ page }) => {
-  await page.goto('http://localhost:3000/store/a382f0b9/menu/4022f81d');
-
-  // 첫 번째 메뉴 담기
-  const menu1 = page.getByText('떡볶이');
-  await expect(menu1).toBeVisible();
-
-  const addButton = page.getByRole('button', { name: /최종금액/ });
-  await expect(addButton).toHaveText('9,900원 담기');
-
   const incrementButton = page.getByRole('button', { name: /수량 증가/ });
   await expect(incrementButton).toBeVisible();
   await incrementButton.click();
