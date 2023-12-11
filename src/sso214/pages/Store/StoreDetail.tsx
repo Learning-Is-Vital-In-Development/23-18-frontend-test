@@ -1,25 +1,33 @@
 import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { CustomMenuList, CustomNoMatch } from '../../components';
-import { MenuItem } from '../../types/Model';
+import { useGetStoreMenuList } from '../../apis/hooks';
 import { useCart } from '../../hooks/useCart';
-import { getStoreMenus } from '../../utils';
+import { MenuItem } from '../../types/Model';
+import { CustomMenuList, CustomNoMatch, CustomLoading } from '../../components';
 
 const StoreDetail = () => {
+  const navigate = useNavigate();
   const { storeId } = useParams();
   const { cartList } = useCart();
-
-  const navigate = useNavigate();
-
-  const MENUS = getStoreMenus(+storeId);
+  const { data, isLoading } = useGetStoreMenuList(storeId!);
 
   const handleClickMenu = useCallback(
     (menuId: MenuItem['id']) => navigate(`/store/${storeId}/menu/${menuId}`),
     [storeId, navigate],
   );
 
-  if (!MENUS) return <CustomNoMatch />;
-  return <CustomMenuList storeMenus={MENUS} selectedMenus={cartList} handleClickItem={handleClickMenu} />;
+  if (isLoading) return <CustomLoading />;
+  if (!data) return <CustomNoMatch />;
+
+  const store = data.storeMenu[0];
+  return (
+    <CustomMenuList
+      key={store.id}
+      storeMenus={store}
+      selectedMenus={cartList}
+      handleClickItem={handleClickMenu}
+    />
+  );
 };
 
 export default StoreDetail;
