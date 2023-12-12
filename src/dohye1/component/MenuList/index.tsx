@@ -1,16 +1,16 @@
 ﻿import styles from './style.module.css';
 import MenuItem from '../MenuItem';
-import { 메뉴목록 } from '../../types';
+import { MenuList } from '../../types';
 import { TEST_ID } from '../../constant';
 import { useNavigate } from 'react-router-dom';
 import useCart from '../../hooks/useCart';
 import { useMemo } from 'react';
 
 interface Props {
-  menuList: 메뉴목록[];
+  menuList: MenuList[];
 }
 
-export default function MenuList({ menuList }: Props) {
+export default function MenuListComp({ menuList }: Props) {
   const navigate = useNavigate();
   const { cartList } = useCart();
 

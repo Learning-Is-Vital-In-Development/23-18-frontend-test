@@ -1,4 +1,4 @@
-﻿import { 메뉴, 메뉴목록 } from '../types';
+﻿import { 메뉴, MenuList } from '../types';
 import { fakerKO as faker } from '@faker-js/faker';
 
 const TITLE = ['연어포케', '우삼겹포케', '오리고기 포케', '들기름 메밀면 샐러드'];
@@ -16,12 +16,12 @@ export const getSingleMenu = (): 메뉴 => ({
   isPopular: faker.datatype.boolean(),
 });
 
-export const getMenuGroup = (title: string): 메뉴목록 => ({
+export const getMenuGroup = (title: string): MenuList => ({
   title,
   menus: Array.from({ length: faker.number.int({ min: 1, max: 5 }) }).map(getSingleMenu),
 });
 
-export const getMenuGroupList = (titleList?: string[]): 메뉴목록[] =>
+export const getMenuGroupList = (titleList?: string[]): MenuList[] =>
   (
     titleList ??
     Array.from({ length: faker.number.int({ min: 1, max: 4 }) }).map(() =>

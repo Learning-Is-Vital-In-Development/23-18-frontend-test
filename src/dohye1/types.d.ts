@@ -17,7 +17,7 @@ export interface 메뉴 {
   tags?: string[];
 }
 
-export interface 메뉴목록 {
+export interface MenuList {
   title?: string;
   menus: 메뉴[];
 }

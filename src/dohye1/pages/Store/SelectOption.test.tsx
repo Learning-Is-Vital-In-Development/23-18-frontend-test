@@ -41,7 +41,6 @@ describe('페이지 경로: /store/:storeId/menu/:menuId', () => {
     renderWithRouter([`store/${storeId}`, `/store/${storeId}/menu/${menuId}`]);
 
     window.history.back();
-    screen.debug();
 
     expect(screen.getByTestId(TEST_ID.GROUP_TITLE)).toBeInTheDocument();
   });

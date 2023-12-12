@@ -1,20 +1,38 @@
 ﻿import { useParams } from 'react-router-dom';
-import MenuList from '../../component/MenuList';
-import { getMenuGroupList } from '../../utils';
+import MenuListComp from '../../component/MenuList';
 import { TEST_ID } from '../../constant';
+import { useMemo } from 'react';
+import { useStoreOperationTime } from '../../hooks/useMenu';
 
 export default function StoreDetail() {
   const { storeId } = useParams();
 
-  const menuList = getMenuGroupList(['인기메뉴', '포케', '보울']);
   const title = storeId;
+
+  const { data, isFetching } = useStoreOperationTime(storeId);
+
+  const isOpen = useMemo(() => {
+    if (!data) return null;
+    const { openHour, closeHour } = data;
+    const curHour = new Date(Date.now()).getHours();
+    return curHour >= openHour && curHour < closeHour;
+  }, [data]);
+
+  if (isFetching) {
+    return <div>loading...</div>;
+  }
+
+  if (!data || isOpen === null) {
+    return <div>fail to load</div>;
+  }
 
   return (
     <div>
       <h2 data-testid={TEST_ID.STORE_TITLE} key={TEST_ID.STORE_TITLE}>
         {title}
       </h2>
-      <MenuList menuList={menuList} />
+      <h3 data-testid={TEST_ID.OPER_YN}>{isOpen ? '영업중' : '영업종료'}</h3>
+      <MenuListComp menuList={data?.storeMenu ?? []} />
     </div>
   );
 }
