@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useCart } from '../../hooks/useCart';
 import { useGetStoreMenu } from '../../apis/hooks';
 import { SelectedMenuItem } from '../../types/Model';
-import { CustomMenuOption, CustomLoading } from '../../components';
+import { CustomMenuOption, CustomLoading, CustomNoMatch } from '../../components';
 
 const StoreOption = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const StoreOption = () => {
   };
 
   if (isLoading) return <CustomLoading />;
-  if (!data) return <h1>data is empty</h1>;
+  if (!data) return <CustomNoMatch />;
   return <CustomMenuOption menu={data.menu} handleSubmit={handleSubmit} />;
 };
 

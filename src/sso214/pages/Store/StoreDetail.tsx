@@ -9,21 +9,21 @@ const StoreDetail = () => {
   const navigate = useNavigate();
   const { storeId } = useParams();
   const { cartList } = useCart();
-  const { data, isLoading } = useGetStoreMenuList(storeId!);
+  const { data: menuList, isLoading } = useGetStoreMenuList(storeId!);
 
   const handleClickMenu = useCallback(
     (menuId: MenuItem['id']) => navigate(`/store/${storeId}/menu/${menuId}`),
     [storeId, navigate],
   );
 
+  const data = menuList ? menuList?.storeMenu.filter((menu) => menu.id === storeId)?.[0] : undefined;
+
   if (isLoading) return <CustomLoading />;
   if (!data) return <CustomNoMatch />;
-
-  const store = data.storeMenu[0];
   return (
     <CustomMenuList
-      key={store.id}
-      storeMenus={store}
+      key={data.id}
+      storeMenus={data}
       selectedMenus={cartList}
       handleClickItem={handleClickMenu}
     />

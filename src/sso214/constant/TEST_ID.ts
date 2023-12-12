@@ -50,4 +50,8 @@ export const TEST_ID = {
     RADIO_GROUP: 'radio-group',
     RADIO_ITEM: 'radio-group-item',
   },
+  STORE: {
+    STORE_LIST: 'store-list',
+    STORE_LIST_ITEM: 'store-list-item',
+  },
 };
