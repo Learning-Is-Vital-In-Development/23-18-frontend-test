@@ -12,14 +12,14 @@ export interface StoreMenu {
 function useGetStoreMenuList(storeId: Menus['id']) {
   return useQuery<unknown, Error, StoreMenuList>({
     queryKey: ['store', storeId],
-    queryFn: () => fetch(`${location.href}api/store/${storeId}`).then((res) => res.json()),
+    queryFn: () => fetch(`${location.origin}/api/store/${storeId}`).then((res) => res.json()),
   });
 }
 
 function useGetStoreMenu(storeId: Menus['id'], menuId: MenuItem['id']) {
   return useQuery<unknown, Error, StoreMenu>({
     queryKey: ['store', 'menu', storeId, menuId],
-    queryFn: () => fetch(`${location.href}api/store/${storeId}/menu/${menuId}`).then((res) => res.json()),
+    queryFn: () => fetch(`${location.origin}/api/store/${storeId}/menu/${menuId}`).then((res) => res.json()),
   });
 }
 
