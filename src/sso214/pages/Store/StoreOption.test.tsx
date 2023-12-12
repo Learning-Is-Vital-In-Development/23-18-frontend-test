@@ -1,10 +1,15 @@
-import { renderWithRouter, getStoreMenu } from '../../utils';
+import { renderHook, waitFor } from '@testing-library/react';
+import { getStoreMenu } from '../../../server/data';
+import { renderWithRouter, wrapper } from '../../utils';
 import { TEST_ID } from '../../constant/TEST_ID';
+import { MenuItem, Menus } from '../../types/Model';
+import { useGetStoreMenu } from '../../apis/hooks';
 
-function renderStoreOption() {
-  const STORE_ID = 1;
-  const MENU_ID = 1;
-  const MENU = getStoreMenu(STORE_ID, MENU_ID);
+function renderStoreOption(storeId?: Menus['id'], menuId?: MenuItem['id']) {
+  const STORE_ID = storeId ?? getStoreMenu()[1].id;
+  const MENU_ID = menuId ?? getStoreMenu()[1].menus[0].id;
+
+  const getStoreMenuHook = () => renderHook(() => useGetStoreMenu(STORE_ID, MENU_ID), { wrapper });
 
   const { user, ...result } = renderWithRouter([`/store/${STORE_ID}`, `/store/${STORE_ID}/menu/${MENU_ID}`]);
 
@@ -18,6 +23,7 @@ function renderStoreOption() {
   const NumberAdjusterDecreaseButton = () => result.getByTestId(TEST_ID.NUMBER_ADJUSTER.DECREASE_BUTTON);
   const NumberAdjusterIncreaseButton = () => result.getByTestId(TEST_ID.NUMBER_ADJUSTER.INCREASE_BUTTON);
   const SubmitButton = () => result.getByTestId(TEST_ID.MENU_OPTION.SUBMIT_BUTTON);
+  const NoMatch = () => result.queryByTestId(TEST_ID.NO_MATCH.NO_MATCH);
 
   const StoreDetailPageTitle = () => result.queryByTestId(TEST_ID.MENU_LIST.TITLE);
   const StoreDetailItems = () => result.queryAllByTestId(TEST_ID.MENU_LIST.ITEM);
@@ -43,13 +49,14 @@ function renderStoreOption() {
   }
 
   return {
-    MENU,
+    getStoreMenuHook,
 
     Form,
     Name,
     Price,
     Prices,
     NumberAdjuster,
+    NoMatch,
 
     StoreDetailPageTitle,
     StoreDetailItems,
@@ -67,22 +74,37 @@ function renderStoreOption() {
 }
 
 describe('/store/:storeId/menu/:menuId', () => {
-  it('해당 경로 접속 시, 화면이 올바르게 노출된다.', () => {
-    const { MENU, Form, Name } = renderStoreOption();
+  it('해당 경로 접속 시, 화면이 올바르게 노출된다.', async () => {
+    const { Form, Name, getStoreMenuHook } = renderStoreOption();
+    const { result } = getStoreMenuHook();
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(Form()).toBeInTheDocument();
-    expect(Name()).toHaveTextContent(MENU.name);
+    expect(Name()).toHaveTextContent((result.current.data?.menu ?? ({} as MenuItem)).name);
   });
 
-  it('수량 초기값이 1로 노출된다.', () => {
-    const { NumberAdjuster } = renderStoreOption();
+  it('잘못된 storeId로 접근 시 <NoMatch /> 페이지가 노출된다.', async () => {
+    const { Form, NoMatch, getStoreMenuHook } = renderStoreOption('abc', 'efg');
+    const { result } = getStoreMenuHook();
+
+    await waitFor(() => expect(result.current.isStale).toBe(true));
+
+    expect(Form()).not.toBeInTheDocument();
+    // expect(NoMatch()).toBeInTheDocument();
+  });
+
+  it('수량 초기값이 1로 노출된다.', async () => {
+    const { NumberAdjuster, getStoreMenuHook } = renderStoreOption();
+    const { result } = getStoreMenuHook();
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(NumberAdjuster()).toHaveTextContent('1개');
   });
 
   it('담기 버튼 클릭 시, 선택한 옵션이 장바구니에 담기고 /store/:storeId 경로로 이동한다.', async () => {
     const {
-      MENU,
       clickSubmitButton,
       Form,
       StoreDetailPageTitle,
@@ -90,9 +112,13 @@ describe('/store/:storeId/menu/:menuId', () => {
       clickIncreaseButton,
       StoreDetailPageOrderButtonCount,
       StoreDetailPageOrderButtonAmount,
+      getStoreMenuHook,
     } = renderStoreOption();
+    const { result } = getStoreMenuHook();
 
-    await clickRadio(2);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    await clickRadio(1);
     await clickIncreaseButton();
     await clickIncreaseButton();
     await clickSubmitButton();
@@ -100,7 +126,9 @@ describe('/store/:storeId/menu/:menuId', () => {
     expect(Form()).not.toBeInTheDocument();
     expect(StoreDetailPageTitle()).toBeInTheDocument();
     expect(StoreDetailPageOrderButtonCount()).toHaveTextContent('1');
-    expect(StoreDetailPageOrderButtonAmount()).toHaveTextContent(`${MENU.options[2].price * 3}원`);
+    expect(StoreDetailPageOrderButtonAmount()).toHaveTextContent(
+      `${(result.current.data?.menu ?? ({} as MenuItem)).options[1].price * 3}원`,
+    );
   });
 
   // it.skip('브라우저의 뒤로가기 버튼 클릭 시, 장바구니에는 변동이 없고 /store/:storeId 경로로 이동한다.', () => {

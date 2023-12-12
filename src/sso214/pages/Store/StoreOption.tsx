@@ -1,23 +1,23 @@
 import { useNavigate, useParams } from 'react-router';
 import { useCart } from '../../hooks/useCart';
-import { getStoreMenu } from '../../utils';
+import { useGetStoreMenu } from '../../apis/hooks';
 import { SelectedMenuItem } from '../../types/Model';
-import { CustomMenuOption } from '../../components';
+import { CustomMenuOption, CustomLoading } from '../../components';
 
 const StoreOption = () => {
+  const navigate = useNavigate();
   const { storeId, menuId } = useParams();
   const { addToCart } = useCart();
-
-  const navigate = useNavigate();
-
-  const MENU = getStoreMenu(+storeId, +menuId);
+  const { data, isLoading } = useGetStoreMenu(storeId!, menuId!);
 
   const handleSubmit = (item: SelectedMenuItem) => {
     addToCart(item);
     navigate(`/store/${storeId}`);
   };
 
-  return <CustomMenuOption menu={MENU} handleSubmit={handleSubmit} />;
+  if (isLoading) return <CustomLoading />;
+  if (!data) return <h1>data is empty</h1>;
+  return <CustomMenuOption menu={data.menu} handleSubmit={handleSubmit} />;
 };
 
 export default StoreOption;
