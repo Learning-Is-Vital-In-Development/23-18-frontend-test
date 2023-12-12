@@ -30,68 +30,105 @@ import { getStoreMenu } from '../../server/data';
 
 function helpFunc() {
   const STORE_URL = 'http://localhost:3000/store';
+  const MENU_LIST = getStoreMenu()[1];
+  const MENU = MENU_LIST.menus[0];
 
   return {
     STORE_URL,
+    MENU_LIST,
+    MENU,
   };
 }
 
-test.describe('/store', () => {
-  test('/store', async ({ page }) => {
-    const { STORE_URL } = helpFunc();
+test('/store', async ({ page }) => {
+  const { STORE_URL, MENU_LIST, MENU } = helpFunc();
 
-    await page.goto(STORE_URL);
+  await page.goto(STORE_URL);
 
-    // Title
-    const heading = page.getByTestId(TEST_ID.HEADING.HEADING);
-    await expect(heading).toHaveText('Store');
+  // '/store' : title 확인
+  const storeHeading = page.getByTestId(TEST_ID.HEADING.HEADING);
+  await expect(storeHeading).toHaveText('Store');
 
-    // /store/:storeId 링크 이동
-    // const storeList = page.getByTestId(TEST_ID.STORE.STORE_LIST);
-    const storeListItem = await page.$(`data-testid=${TEST_ID.STORE.STORE_LIST} >> css=li:first-child`);
-    console.log(storeListItem);
-    await storeListItem?.click();
-    // await storeList.children[0].click();
-    await expect(page).toHaveURL(`${STORE_URL}/${getStoreMenu()[0].id}`);
-  });
+  // '/store' : 메뉴 상세 페이지로 이동 확인
+  const storeFirstItemButton = page.getByRole('button', { name: MENU_LIST.title });
+  await storeFirstItemButton.click();
+  await expect(page).toHaveURL(`${STORE_URL}/${MENU_LIST.id}`);
 
-  // test('/store/:storeId', async ({ page }) => {
-  //   const { STORE_URL } = helpFunc();
-  //
-  //   await page.goto(`${STORE_URL}/1`);
-  //   await expect(page).toHaveURL(`${STORE_URL}/1`);
-  // });
+  // '/store/:storeId' : title 확인
+  const storeDetailTitle = page.getByTestId(TEST_ID.MENU_LIST.TITLE);
+  await expect(storeDetailTitle).toHaveText(MENU_LIST.title);
 
-  // test('/store/:storeId/menu/:menuId', async ({ page }) => {
-  //   //
-  // });
+  // '/store/:storeId' : 메뉴 옵션 페이지로 이동 확인
+  const storeDetailFirstItemButton = page.getByRole('heading', { name: MENU.name });
+  await storeDetailFirstItemButton.click();
+  await expect(page).toHaveURL(`${STORE_URL}/${MENU_LIST.id}/menu/${MENU.id}`);
+
+  // '/store/:storeId/menu/:menuId' : 메뉴 이름 확인
+  const storeOptionTitle = page.getByTestId(TEST_ID.MENU_OPTION.NAME);
+  await expect(storeOptionTitle).toHaveText(MENU.name);
+
+  // '/store/:storeId/menu/:menuId' : 초기 option radios / 수량 / total amount 값 확인
+  const storeOptionPrice = page.getByTestId(TEST_ID.MENU_OPTION.PRICE);
+  const storeOptionFirstRadio = page.getByRole('radio', { name: MENU?.options[0].name });
+  const storeOptionSecondRadio = page.getByRole('radio', { name: MENU?.options[1].name });
+  const storeOptionNumberAdjusterValue = page.getByTestId(TEST_ID.NUMBER_ADJUSTER.VALUE);
+  const storeOptionNumberAdjusterDecreaseButton = page.getByTestId(TEST_ID.NUMBER_ADJUSTER.DECREASE_BUTTON);
+  const storeOptionNumberAdjusterIncreaseButton = page.getByTestId(TEST_ID.NUMBER_ADJUSTER.INCREASE_BUTTON);
+  const storeOptionSubmitButton = page.getByTestId(TEST_ID.MENU_OPTION.SUBMIT_BUTTON);
+  if (MENU?.options.length > 1) {
+    await expect(storeOptionFirstRadio).toBeChecked();
+  } else {
+    await expect(storeOptionPrice).toHaveText(`${MENU.options[0].price}원`);
+  }
+  await expect(storeOptionNumberAdjusterValue).toHaveText(`${1}개`);
+  await expect(storeOptionSubmitButton).toHaveText(`${MENU.options[0].price}원 담기`);
+
+  // '/store/:storeId/menu/:menuId' : 이벤트에 따라 total amount 값 변경 확인
+  await storeOptionSecondRadio.click();
+  await expect(storeOptionSecondRadio).toBeChecked();
+  await expect(storeOptionSubmitButton).toHaveText(`${MENU.options[1].price}원 담기`);
+  await storeOptionNumberAdjusterIncreaseButton.click();
+  await storeOptionNumberAdjusterIncreaseButton.click();
+  await expect(storeOptionSubmitButton).toHaveText(`${MENU.options[1].price * 3}원 담기`);
+  await storeOptionNumberAdjusterDecreaseButton.click();
+  await expect(storeOptionSubmitButton).toHaveText(`${MENU.options[1].price * 2}원 담기`);
+
+  // '/store/:storeId/menu/:menuId' : submit 버튼 클릭 시 메뉴 디테일 페이지로 이동 확인
+  await storeOptionSubmitButton.click();
+  await expect(page).toHaveURL(`${STORE_URL}/${MENU_LIST.id}`);
+
+  // '/store/:storeId' : 메뉴 옵션 페이지에서 선택한 값 확인
+  const storeDetailOrderButton = page.getByTestId(TEST_ID.MENU_LIST.ORDER_BUTTON);
+  await expect(storeDetailOrderButton).toHaveText(`${1}주문하기${MENU.options[1].price * 2}원`);
+
+  // '/store/:storeId' : 다시 메뉴 옵션 페이지로 이동해서 이벤트 작동 후 아이템이 추가로 담기는지 확인
+  await storeDetailFirstItemButton.click();
+  await storeOptionNumberAdjusterIncreaseButton.click();
+  await storeOptionNumberAdjusterIncreaseButton.click();
+  await storeOptionSubmitButton.click();
+  await expect(storeDetailOrderButton).toHaveText(
+    `${2}주문하기${MENU.options[1].price * 2 + MENU.options[0].price * 3}원`,
+  );
+
+  // '/store/:storeId' : 다시 메뉴 옵션 페이지로 이동해서 이벤트 작동 후 뒤로가기 시, 아이템 변경이 없는지 확인
+  await storeDetailFirstItemButton.click();
+  await storeOptionNumberAdjusterIncreaseButton.click();
+  await storeOptionNumberAdjusterIncreaseButton.click();
+  await page.goBack();
+  await expect(page).toHaveURL(`${STORE_URL}/${MENU_LIST.id}`);
+  await expect(storeDetailOrderButton).toHaveText(
+    `${2}주문하기${MENU.options[1].price * 2 + MENU.options[0].price * 3}원`,
+  );
+
+  // '/store/:storeId' : 잘못된 storeId 접근 시 에러 페이지 확인
+  const storeDetailNotMatchElement = page.getByTestId(TEST_ID.NO_MATCH.NO_MATCH);
+  await page.goto(`${STORE_URL}/123`);
+  await expect(storeDetailTitle).not.toBeVisible();
+  await expect(storeDetailNotMatchElement).toBeVisible();
+
+  // '/store/:storeId/menu/:menuId' : 잘못된 menuId로 접근 시 에러 페이지 확인
+  const storeOptionNotMatchElement = page.getByTestId(TEST_ID.NO_MATCH.NO_MATCH);
+  await page.goto(`${STORE_URL}/123/menu/123`);
+  await expect(storeOptionTitle).not.toBeVisible();
+  // await expect(storeOptionNotMatchElement).toBeVisible();
 });
-
-// test('/store', async ({ page }) => {
-//   await page.goto('http://localhost:3000/store');
-//
-//   // store 페이지 heading 확인
-//   const heading = page.getByTestId(TEST_ID.HEADING.HEADING);
-//   await expect(heading).toBeVisible();
-//
-//   // await expect(page).toHaveTitle('Store');
-//
-//   // 1. title이 올바르게 노출되는지 = store
-//   // 2. 리스트 클릭 시 해당 페이지로 이동하는지
-// });
-
-// test('store/:storeId', async ({ page }) => {
-//   await page.goto('http://localhost:3000');
-//
-//   // 1. API로 받아온 내용이 잘 들어갔는지
-//   // 2. 페이지 이동
-// });
-//
-// test('store/:storeId', async ({ page }) => {
-//   await page.goto('http://localhost:3000');
-//
-//   // 이벤트
-//   // 장바구니 담기
-//   // 다시 /store/storeid ㅔㅍ이지로 이동
-//   // 장바구니에 잘 들어갔는지 확인
-// });

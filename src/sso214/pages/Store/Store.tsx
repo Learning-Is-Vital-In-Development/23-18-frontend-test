@@ -12,9 +12,8 @@ const Store = () => {
       <CustomList<MenuList>
         containerTag="ul"
         renderItem={({ item }) => (
-          <li key={item.id}>
-            <p>{item.title}</p>
-            <button onClick={() => navigate(`/store/${item.id}`)}>move</button>
+          <li key={item.id} data-testid={TEST_ID.STORE.STORE_LIST_ITEM}>
+            <button onClick={() => navigate(`/store/${item.id}`)}>{item.title}</button>
           </li>
         )}
         keyExtractor={(item) => item.id}

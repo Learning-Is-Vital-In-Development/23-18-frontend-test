@@ -52,5 +52,6 @@ export const TEST_ID = {
   },
   STORE: {
     STORE_LIST: 'store-list',
+    STORE_LIST_ITEM: 'store-list-item',
   },
 };
