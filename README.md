@@ -6,7 +6,11 @@
 
 ## 핵심 스터디 결과물
 
-- WIP
+- [dohye1](https://github.com/Learning-Is-Vital-In-Development/23-18-frontend-test/tree/main/src/dohye1)
+- [jiji-hoon96](https://github.com/Learning-Is-Vital-In-Development/23-18-frontend-test/tree/main/src/jiji-hoon96)
+- [leehaeun0](https://github.com/Learning-Is-Vital-In-Development/23-18-frontend-test/tree/main/src/leehaeun0)
+- [sasha1107](https://github.com/Learning-Is-Vital-In-Development/23-18-frontend-test/tree/main/src/sasha1107)
+- [sso214](https://github.com/Learning-Is-Vital-In-Development/23-18-frontend-test/tree/main/src/sso214)
 
 ## 진행방식
 
